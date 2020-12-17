@@ -12,8 +12,10 @@ public class FortifyingState implements GameState {
     public Territory destination; //fortifyPlanning will handle it
     public Territory source; //fortifyPlanning will handle it
     public int movingArmies; //fortifyingArmySelection will handle it
+    private boolean musicAbilityUsed;
 
     private FortifyingState() {
+        musicAbilityUsed = false;
         engine = GameEngine.getInstance();
         start();
     }
@@ -34,8 +36,13 @@ public class FortifyingState implements GameState {
     }
 
     public void pass() {
-        engine.nextPlayer();
-        engine.switchState(ArmyPlacementState.getInstance());
+        if (musicAbilityUsed){
+            engine.switchState(AttackingPlanningState.getInstance());
+        }
+        else {
+            engine.nextPlayer();
+            engine.switchState(ArmyPlacementState.getInstance());
+        }
     }
 
     @Override
@@ -73,5 +80,9 @@ public class FortifyingState implements GameState {
 
     public void setMovingArmies(int movingArmies) {
         this.movingArmies = movingArmies;
+    }
+
+    public void setMusicAbilityUsedTrue() {
+        musicAbilityUsed = true;
     }
 }
