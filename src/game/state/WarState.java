@@ -10,10 +10,18 @@ public class WarState implements GameState{
     private static WarState instance;
     private AttackingState attack;
     private GameEngine engine;
+    private boolean artAbilityUsed, scienceAbilityUsed, econAbilityUsed,
+                    humanitiesAbilityUsed, lawAbilityUsed, engineeringAbility;
 
     private WarState() {
         attack = AttackingState.getInstance();
         engine = GameEngine.getInstance();
+        artAbilityUsed = false;
+        scienceAbilityUsed = false;
+        econAbilityUsed = false;
+        humanitiesAbilityUsed = false;
+        lawAbilityUsed = false;
+        engineeringAbility = false;
     }
 
     public static WarState getInstance() {
@@ -51,19 +59,37 @@ public class WarState implements GameState{
 
     // wage war on an enemy territory
     public void war() {
+        Territory attackingTerritory = attack.getSource();
+        Territory defendingTerritory = attack.getDestination();
+
         int[] attackingDice = {0, 0, 0};
-        int[] defendingDice = {0, 0};
+        int[] defendingDice = {0, 0, 0};
         int attackingLostDice = 0;
         int defendingLostDice = 0;
 
+        //This block is initiated when Econ Faculty uses ability
+        if(econAbilityUsed) {
+            attack.setDefendingArmies(attack.getDefendingArmies() - 1);
+        }
+        //-----------------------------------------------------
+
+        //This block is initiated when Humanities Faculty uses ability
+        if(humanitiesAbilityUsed && (defendingTerritory.getNumOfArmies() < attackingTerritory.getNumOfArmies())) {
+            attack.setDefendingArmies(attack.getDefendingArmies() + 1);
+        }
+        //-----------------------------------------------------
+
         for (int i = 0; i < attack.getAttackingArmies(); i++) {
             attackingDice[i] = (int) (Math.random() * 6 + 1);
+            //This block is initiated when Engineering Faculty uses ability
+            if (engineeringAbility && (attackingDice[i] == 1)){
+                attackingDice[i] = (int) (Math.random() * 6 + 2);
+            }
+            //-----------------------------------------------------
         }
         for (int i = 0; i < attack.getDefendingArmies(); i++) {
             defendingDice[i] = (int) (Math.random() * 6 + 1);
         }
-
-        displayWar(attackingDice, defendingDice);
 
         // find max rolls
         int maxLocation;
@@ -73,6 +99,17 @@ public class WarState implements GameState{
         maxLocation = getMax(defendingDice);
         int maxDefend = defendingDice[maxLocation];
         defendingDice[maxLocation] = 0;
+
+        //This block is initiated when Art Faculty uses ability
+        if(artAbilityUsed) {
+            int tempDie = maxAttack;
+            maxAttack = maxDefend;
+            maxDefend = tempDie;
+        }
+        //-----------------------------------------------------
+
+        displayWar(attackingDice, defendingDice);
+
 
         // compare
         if (maxAttack > maxDefend) {
@@ -95,14 +132,25 @@ public class WarState implements GameState{
                 // compare
                 if (maxAttack > maxDefend) {
                     defendingLostDice++;
-                } else {
-                    attackingLostDice++;
+                }
+                else {
+                    //This block is initiated if Science Faculty uses ability
+                    if(scienceAbilityUsed && (maxAttack == maxDefend)){
+                        defendingLostDice++;
+                    }
+                    //----------------------------------------------------
+                    else{
+                        attackingLostDice++;
+                    }
                 }
             }
         }
 
-        Territory attackingTerritory = attack.getSource();
-        Territory defendingTerritory = attack.getDestination();
+        //This block is initiated when Law Faculty uses ability
+        if(lawAbilityUsed) {
+            war();
+        }
+        //-----------------------------------------------------
 
         attackingTerritory.setNumOfArmies(attackingTerritory.getNumOfArmies() - attackingLostDice);
         defendingTerritory.setNumOfArmies(defendingTerritory.getNumOfArmies() - defendingLostDice);
@@ -139,4 +187,16 @@ public class WarState implements GameState{
     public void start() {
         war();
     }
+
+    public void setArtAbilityUsedTrue(){ artAbilityUsed = true;}
+
+    public void setScienceAbilityUsedTrue(){ scienceAbilityUsed = true;}
+
+    public void setEconAbilityUsedTrue(){ econAbilityUsed = true;}
+
+    public void setHumanitiesAbilityUsedUsedTrue(){ humanitiesAbilityUsed = true;}
+
+    public void setLawAbilityUsedUsedUsedTrue(){ lawAbilityUsed = true;}
+
+    public void setEngineeringAbilityUsedUsedTrue(){ engineeringAbility = true;}
 }
