@@ -9,10 +9,12 @@ public class ArmyPlacementState implements GameState {
     private static ArmyPlacementState instance;
     private GameEngine engine;
     private int addibleArmyNo;
+    private boolean businessAbilityUsed;
 
     private ArmyPlacementState() {
         engine = GameEngine.getInstance();
         calculateNumberOfArmies(engine.getCurrentPlayer());
+        businessAbilityUsed = false;
     }
 
     public static ArmyPlacementState getInstance() {
@@ -31,7 +33,13 @@ public class ArmyPlacementState implements GameState {
         Territory[] territories = engine.getMap().getTerritories();
 
         for (Territory territory : territories) { // disabling the button is a better solution
-            if ((e.getSource() == territory) && (engine.getCurrentPlayer() == territory.getRuler())) {
+            //This block is initiated when Business Faculty uses ability
+            if ((e.getSource() == territory) && businessAbilityUsed && (engine.getCurrentPlayer() != territory.getRuler())){
+                territory.setRuler(engine.getCurrentPlayer());
+                engine.switchState(AttackingPlanningState.getInstance());
+            }
+            //----------------------------------------------------------
+            else if ((e.getSource() == territory) && (engine.getCurrentPlayer() == territory.getRuler())) {
                 territory.setNumOfArmies(territory.getNumOfArmies() + 1);
                 addibleArmyNo = addibleArmyNo - 1;
             }
@@ -59,5 +67,9 @@ public class ArmyPlacementState implements GameState {
 
     public int getAddibleArmyNo(){
         return addibleArmyNo;
+    }
+
+    public void setBusinessAbilityUsedTrue(){
+        businessAbilityUsed = true;
     }
 }
