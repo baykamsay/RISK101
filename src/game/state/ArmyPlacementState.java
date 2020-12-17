@@ -32,20 +32,22 @@ public class ArmyPlacementState implements GameState {
     public void mapSelect(ActionEvent e) {
         Territory[] territories = engine.getMap().getTerritories();
 
+        if (addibleArmyNo <= 0) {
+            engine.switchState(AttackingPlanningState.getInstance());
+        }
         for (Territory territory : territories) { // disabling the button is a better solution
             //This block is initiated when Business Faculty uses ability
             if ((e.getSource() == territory) && businessAbilityUsed && (engine.getCurrentPlayer() != territory.getRuler())){
                 territory.setRuler(engine.getCurrentPlayer());
+                businessAbilityUsed = false;
                 engine.switchState(AttackingPlanningState.getInstance());
+                break;
             }
             //----------------------------------------------------------
             else if ((e.getSource() == territory) && (engine.getCurrentPlayer() == territory.getRuler())) {
                 territory.setNumOfArmies(territory.getNumOfArmies() + 1);
                 addibleArmyNo = addibleArmyNo - 1;
             }
-        }
-        if (addibleArmyNo <= 0) {
-            engine.switchState(AttackingPlanningState.getInstance());
         }
     }
 
