@@ -10,14 +10,14 @@ public class WarState implements GameState{
     private static WarState instance;
     private AttackingState attack;
     private GameEngine engine;
-    private boolean artAbilityUsed, scienceAbilityUsed, econAbilityUsed,
+    private boolean artAbilityUsed, appScienceAbilityUsed, econAbilityUsed,
                     humanitiesAbilityUsed, lawAbilityUsed, engineeringAbility;
 
     private WarState() {
         attack = AttackingState.getInstance();
         engine = GameEngine.getInstance();
         artAbilityUsed = false;
-        scienceAbilityUsed = false;
+        appScienceAbilityUsed = false;
         econAbilityUsed = false;
         humanitiesAbilityUsed = false;
         lawAbilityUsed = false;
@@ -135,7 +135,7 @@ public class WarState implements GameState{
                 }
                 else {
                     //This block is initiated if Science Faculty uses ability
-                    if(scienceAbilityUsed && (maxAttack == maxDefend)){
+                    if(appScienceAbilityUsed && (maxAttack == maxDefend)){
                         defendingLostDice++;
                     }
                     //----------------------------------------------------
@@ -190,7 +190,7 @@ public class WarState implements GameState{
 
     public void setArtAbilityUsedTrue(){ artAbilityUsed = true;}
 
-    public void setScienceAbilityUsedTrue(){ scienceAbilityUsed = true;}
+    public void setScienceAbilityUsedTrue(){ appScienceAbilityUsed = true;}
 
     public void setEconAbilityUsedTrue(){ econAbilityUsed = true;}
 
