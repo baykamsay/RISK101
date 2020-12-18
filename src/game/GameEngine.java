@@ -232,5 +232,6 @@ public class GameEngine extends Application {
     public Player getCurrentPlayer() {
         return players.get(playerTurn);
     }
-    
+
+    public GameState getCurrentState() { return currentState; }
 }

@@ -37,10 +37,11 @@ public class FortifyingState implements GameState {
 
     public void pass() {
         if (musicAbilityUsed){
-            engine.switchState(AttackingPlanningState.getInstance());
             musicAbilityUsed = false;
+            engine.switchState(AttackingPlanningState.getInstance());
         }
         else {
+            engine.getCurrentPlayer().getFaculty().setAbilityUsed(false);
             engine.nextPlayer();
             engine.switchState(ArmyPlacementState.getInstance());
         }

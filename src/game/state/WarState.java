@@ -3,6 +3,9 @@ package game.state;
 import game.GameEngine;
 import game.player.Player;
 import game.player.Territory;
+import game.player.faculties.Fas;
+import game.player.faculties.Ibef;
+import game.player.faculties.Mf;
 import javafx.event.ActionEvent;
 
 public class WarState implements GameState{
@@ -21,7 +24,7 @@ public class WarState implements GameState{
         econAbilityUsed = false;
         humanitiesAbilityUsed = false;
         lawAbilityUsed = false;
-        engineeringAbility = false;
+        engineeringAbility = true;
     }
 
     public static WarState getInstance() {
@@ -70,11 +73,13 @@ public class WarState implements GameState{
         //This block is initiated when Econ Faculty uses ability
         if(econAbilityUsed) {
             attack.setDefendingArmies(attack.getDefendingArmies() - 1);
+            econAbilityUsed = false;
         }
         //-----------------------------------------------------
 
         //This block is initiated when Humanities Faculty uses ability
-        if(humanitiesAbilityUsed && (defendingTerritory.getNumOfArmies() < attackingTerritory.getNumOfArmies())) {
+        if(humanitiesAbilityUsed && (defendingTerritory.getNumOfArmies() < attackingTerritory.getNumOfArmies())
+                                 && (engine.getCurrentPlayer().getFaculty() instanceof Ibef)) {
             attack.setDefendingArmies(attack.getDefendingArmies() + 1);
         }
         //-----------------------------------------------------
@@ -82,7 +87,7 @@ public class WarState implements GameState{
         for (int i = 0; i < attack.getAttackingArmies(); i++) {
             attackingDice[i] = (int) (Math.random() * 6 + 1);
             //This block is initiated when Engineering Faculty uses ability
-            if (engineeringAbility && (attackingDice[i] == 1)){
+            if (engineeringAbility && (attackingDice[i] == 1)  && (engine.getCurrentPlayer().getFaculty() instanceof Mf)){
                 attackingDice[i] = (int) (Math.random() * 6 + 2);
             }
             //-----------------------------------------------------
@@ -105,6 +110,7 @@ public class WarState implements GameState{
             int tempDie = maxAttack;
             maxAttack = maxDefend;
             maxDefend = tempDie;
+            artAbilityUsed = false;
         }
         //-----------------------------------------------------
 
@@ -135,7 +141,7 @@ public class WarState implements GameState{
                 }
                 else {
                     //This block is initiated if Science Faculty uses ability
-                    if(appScienceAbilityUsed && (maxAttack == maxDefend)){
+                    if(appScienceAbilityUsed && (maxAttack == maxDefend)  && (engine.getCurrentPlayer().getFaculty() instanceof Fas)){
                         defendingLostDice++;
                     }
                     //----------------------------------------------------
@@ -148,6 +154,7 @@ public class WarState implements GameState{
 
         //This block is initiated when Law Faculty uses ability
         if(lawAbilityUsed) {
+            lawAbilityUsed = false;
             war();
         }
         //-----------------------------------------------------
@@ -196,7 +203,5 @@ public class WarState implements GameState{
 
     public void setHumanitiesAbilityUsedUsedTrue(){ humanitiesAbilityUsed = true;}
 
-    public void setLawAbilityUsedUsedUsedTrue(){ lawAbilityUsed = true;}
-
-    public void setEngineeringAbilityUsedUsedTrue(){ engineeringAbility = true;}
+    public void setLawAbilityUsedTrue(){ lawAbilityUsed = true;}
 }

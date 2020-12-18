@@ -8,4 +8,5 @@ public interface Faculty {
     public void useAbility();
     public Color getColor();
     public ColorAdjust getCa();
+    public void setAbilityUsed(boolean b);
 }

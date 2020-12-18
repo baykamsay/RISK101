@@ -7,8 +7,10 @@ public class Fen implements Faculty{
 
     final public Color color = Color.LIME;
     final public ColorAdjust ca = new ColorAdjust();
+    private boolean abilityUsed;
 
     public Fen(){
+        abilityUsed = false;
         ca.setHue(-1.0);
     }
 
@@ -30,5 +32,10 @@ public class Fen implements Faculty{
     @Override
     public ColorAdjust getCa() {
         return ca;
+    }
+
+    @Override
+    public void setAbilityUsed(boolean b){
+        abilityUsed = b;
     }
 }
